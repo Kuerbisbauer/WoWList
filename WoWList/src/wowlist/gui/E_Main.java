@@ -25,6 +25,10 @@ public class E_Main extends JFrame implements GroupChanged, ControlListener{
 	private GroupQueries 	gq = new GroupQueries();
 	private AmountQueries 	aq = new AmountQueries();
 	
+	/**
+	 * <b>onstruktor</b><p>
+	 * Das Hauptfenster wird zusammengebaut und die Buttons mit ActionListener versehen.<br>
+	 */
 	public E_Main(){
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//goimport();
@@ -49,6 +53,9 @@ public class E_Main extends JFrame implements GroupChanged, ControlListener{
 		this.add(control, 	BorderLayout.SOUTH);
 	}
 	
+	/**
+	 * Die CSV Datei wird eingelesen und alle relevanten Daten in die DB gespeichert
+	 */
 	private void goimport(){
 		CSVImport csv = new CSVImport();
 		csv.fullImport();
@@ -79,7 +86,9 @@ public class E_Main extends JFrame implements GroupChanged, ControlListener{
 	List<Amount> diff = new ArrayList<Amount>();
 	List<Amount> mem = new ArrayList<Amount>();
 	
-	//Speichert die Liste von E_List in die Datenbank
+	/**
+	 * Speichert die Liste von E_List in die Datenbank
+	 */
 	@Override
 	public void saveList() {
 		// TODO Die aktuelle Mengenliste wird abgeholt und
@@ -92,6 +101,9 @@ public class E_Main extends JFrame implements GroupChanged, ControlListener{
 		getCurrentGroup();
 	}
 
+	/**
+	 * Sämtliche Mengen werden in die DB gepseichert
+	 */
 	private void saveNewAmount() {
 		Gruppe g = (Gruppe) creation.getJcb().getSelectedItem();
 		mem.removeAll(diff);
@@ -101,6 +113,9 @@ public class E_Main extends JFrame implements GroupChanged, ControlListener{
 		
 	}
 
+	/**
+	 * Falls eine Menge vorhanden ist, wird diese in der DB editiert
+	 */
 	private void saveExistingAmount() {
 		List<Amount> alist = mem;
 		
@@ -108,6 +123,9 @@ public class E_Main extends JFrame implements GroupChanged, ControlListener{
 			aq.editAmount(a);
 	}
 
+	/**
+	 * Eine neue Gruppe wird erstellt mit Namen und den enthaltenen Mengen (Items und Anzahl)
+	 */
 	private void saveGroup() {
 		Gruppe g = (Gruppe) creation.getJcb().getSelectedItem();
 		
@@ -127,6 +145,10 @@ public class E_Main extends JFrame implements GroupChanged, ControlListener{
 		creation.changeItemComboBox(g);
 	}
 	
+	/**
+	 * Die Anzahl und die Preise aller Items werden zusammengezählt und im unteren JLabel
+	 * angezeigt
+	 */
 	@Override
 	public void refreshTotalSum(List<Amount> amountlist) {
 		// TODO Die Summe aller Mengen werden zusammengezählt
@@ -140,6 +162,10 @@ public class E_Main extends JFrame implements GroupChanged, ControlListener{
 		controlTotal.setText(String.valueOf(total));
 	}
 	
+	/**
+	 * Eine neue Gruppe wird erstellt.<br>
+	 * Sämtliche vorhandenen Felder werden gelöscht und ein leeres Dokument angezeigt.
+	 */
 	@Override
 	public void newGroup() {
 		// TODO Auto-generated method stub
@@ -156,6 +182,9 @@ public class E_Main extends JFrame implements GroupChanged, ControlListener{
 		refreshUI();
 	}
 
+	/**
+	 * GUI wird aktualisiert
+	 */
 	@Override
 	public void refreshUI() {
 		validate();

@@ -30,6 +30,12 @@ public class E_Creation extends JPanel{
 	private GroupQueries 	gq = new GroupQueries();
 	private AmountQueries 	aq = new AmountQueries();
 	
+	/**
+	 * Obere Leiste, enthält:<br>
+	 * <li>ComboBox für beinahltende Listen
+	 * <li>Neue Liste
+	 * <li>Liste löschen
+	 */
 	public E_Creation(){
 		init();
 	}
@@ -50,8 +56,12 @@ public class E_Creation extends JPanel{
 		
 		addActionListener();
 	}
-
+	
+	/**
+	 * Die ComboBox wird mit allen verfügbaren Listen befüllt
+	 */
 	public void fillComboBox() {
+		//Zuerst wird die ComboBox geleert um die Reihenfolge beizubehalten
 		dcm.removeAllElements();
 		List<Gruppe> list = gq.getAllGroups();
 		
@@ -59,20 +69,39 @@ public class E_Creation extends JPanel{
 			dcm.addElement(g);
 	}
 	
+	/**
+	 * Neue Elemente werden in die ComboBox gelegt
+	 * 
+	 * @param g - Neue Gruppe
+	 */
 	public void addToComboBox(Gruppe g) {
 		dcm.addElement(g);
 	}
 
+	/**
+	 * Ausgewähltes Element wird entfernt
+	 * 
+	 * @param g - Ausgewählte Gruppe
+	 */
 	public void deleteFromComboBox(Gruppe g) {
 		dcm.removeElement(g);
 	}
 	
+	/**
+	 * Wird der Name einer Gruppe geändert, wird zuerst das Element entfernt und
+	 * dann neuhinzugefügt (Workarround).
+	 * 
+	 * @param g - Ausgewählte Gruppe
+	 */
 	public void changeItemComboBox(Gruppe g) {
 		deleteFromComboBox(g);
 		addToComboBox(g);
 		dcm.setSelectedItem(g);
 	}
 	
+	/**
+	 * Es wird das letzte Item in der ComboBox ausgewählt (benötigt für den Workaround)
+	 */
 	public void selectLastItemComboBox(){
 		jcb.setSelectedIndex(dcm.getSize()-1);
 	}
@@ -95,35 +124,53 @@ public class E_Creation extends JPanel{
 		deleteBut.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(jcb.getItemCount() > 0){
-					Gruppe g = (Gruppe) jcb.getSelectedItem();
-					
-					int selectedIndex = jcb.getSelectedIndex()-1;
-					
-					for(Amount a : aq.getAllAmountsFromGivenGroup(g))
-						aq.deleteAmount(a);
-					
-					gq.deleteGruppe((Gruppe) jcb.getSelectedItem());
-					
-					deleteFromComboBox(g);
-					
-					if(selectedIndex > 0)
-						jcb.setSelectedIndex(selectedIndex);
-				}
+				deleteGroup();
 			}
 		});
 	}
 
+	/**
+	 * Die ausgewählte Gruppe wird gelöscht und die ComboBox aktualisiert
+	 */
+	protected void deleteGroup() {
+		if(jcb.getItemCount() > 0){
+			Gruppe g = (Gruppe) jcb.getSelectedItem();
+			
+			int selectedIndex = jcb.getSelectedIndex()-1;
+			
+			for(Amount a : aq.getAllAmountsFromGivenGroup(g))
+				aq.deleteAmount(a);
+			
+			gq.deleteGruppe((Gruppe) jcb.getSelectedItem());
+			
+			deleteFromComboBox(g);
+			
+			if(selectedIndex > 0)
+				jcb.setSelectedIndex(selectedIndex);
+		}
+	}
+
+	/**
+	 * ObserverPattern falls eine neue Gruppe erstellt wurde
+	 */
 	protected void newGroup() {
 		for(GroupChanged gc : list)
 			gc.newGroup();
 	}
 
+	/**
+	 * ObserverPattern falls eine Gruppe geändert wurde
+	 */
 	protected void changeGroup() {
 		for(GroupChanged gc : list)
 			gc.getCurrentGroup();
 	}
 
+	/**
+	 * ObserverPattern, es wird das Hauptfenster in die Liste hinzugefügt
+	 * 
+	 * @param e_Main - Das Hauptfenster
+	 */
 	public void addGroupChangedListener(E_Main e_Main) {
 		list.add(e_Main);
 	}

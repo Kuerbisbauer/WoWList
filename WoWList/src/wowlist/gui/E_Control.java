@@ -28,12 +28,23 @@ public class E_Control extends JPanel{
 	
 	private List<ControlListener> list = new ArrayList<ControlListener>();
 
+	/**
+	 * Unterer Bereich für die Buttons<br>
+	 * <li>Speichern
+	 * <li>Schließen
+	 * <li>CSV importieren
+	 */
 	public E_Control(){
 		init();
 	}
 	
+	/**
+	 * Baut die GUI und fügt Actionlistener hinzu
+	 */
 	private void init() {
+		//BorderLayout
 		setLayout(new BorderLayout());
+		
 		
 		JPanel buttons = new JPanel(new FlowLayout());
 		
@@ -75,11 +86,21 @@ public class E_Control extends JPanel{
 		});
 	}
 
-	public void saveList(){
+	/**
+	 * Für jede Klasse die dieses Interface implementiert wird aufgefordert
+	 * diese Funktion auszuführen (Observer Pattern)
+	 */
+	protected void saveList(){
 		for(ControlListener cl : list)
 			cl.saveList();
 	}
 	
+	/**
+	 * Das Hauptfenster wird in die Liste von ControlListenern gepackt, damit
+	 * diese auf Benutzereingaben reagiert.
+	 * 
+	 * @param e_Main - Das Hauptfenster
+	 */
 	public void addControlListener(E_Main e_Main) {
 		list.add(e_Main);
 	}
