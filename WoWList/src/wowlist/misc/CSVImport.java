@@ -37,9 +37,12 @@ public class CSVImport {
 		try{
 			JFileChooser jfc = new JFileChooser();
 			jfc.showOpenDialog(null);
+			
 			File f = jfc.getSelectedFile();
+			
 			br = new BufferedReader(new FileReader(f));
 			br.readLine();
+			
 			while((line = br.readLine()) != null){
 				String[] itemName = line.split(splitCSV);
 				double price = Double.parseDouble(itemName[9]);

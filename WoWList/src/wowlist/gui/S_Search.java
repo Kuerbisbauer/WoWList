@@ -88,10 +88,22 @@ public class S_Search extends JDialog{
 		add(panel, BorderLayout.SOUTH);
 	}
 	
+	/**
+	 * Jedes mal wenn etwas eingegeben wird, wird die DB nach dem 
+	 * String abgefragt und alle Datensätze die diesen enthalten
+	 * in der Liste angezeigt.
+	 * 
+	 * @param s - Eingegebener String
+	 */
 	protected void getItemsLike(String s){
 		addData(iq.getItemsLikeString(s));
 	}
 	
+	/**
+	 * Die Datensätze aus der Datenbank werden in die Liste geschrieben
+	 * 
+	 * @param list - Ergebnisliste aus der Datenbank
+	 */
 	private void addData(List<Item> list){
 		dlm.clear();
 		for(Item m : list)
