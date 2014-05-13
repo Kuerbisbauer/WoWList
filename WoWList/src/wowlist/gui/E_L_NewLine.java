@@ -35,6 +35,15 @@ public class E_L_NewLine{
 		this.e_list = e_List;
 	}
 	
+	/**
+	 * Eine neue Zeile wird hinzugefügt.<br>
+	 * Diese beinhaltet: <br>
+	 * <li>Button - Neues Material
+	 * <li>Button - Material löschen
+	 * <li>Textfeld - Menge
+	 * <li>Textfeld (locked) - Preis
+	 * <li>Textfeld (locked) - Gesamtpreis
+	 */
 	public void newLine() {
 		newMat.setText("New Material");
 		deleteMat.setText("Delete Material");
@@ -56,68 +65,93 @@ public class E_L_NewLine{
 	}
 	
 	private void setActionListener() {
-		
+
 		newMat.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
-
-				S_Search ss = new S_Search();
-				ss.setSize(new Dimension(200, 300));
-				ss.setVisible(true);
-				
-				Item i = ss.getSelectedItem();
-				
-				if(i != null){
-					a.setFk_Item(i);
-					
-					newMat.setText(i.getI_name());
-					price.setText(String.valueOf(i.getI_price()));
-					
-					e_list.newRow();
-					
-					e_list.refreshUI();
+					getNewItem();
 				}
-			}
-		});
+			});
 		amount.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
-				try{
-					int i = Integer.parseInt(amount.getText());
-					Double d = Double.parseDouble(price.getText());
-		
-					Double id = i*d;
-					
-					total.setText(String.valueOf(id));
-
-					a.setA_amount(i);
-					materialChanged();
-				}catch(Exception ex){};
+				amountWrite();
 			}
 		});
 		deleteMat.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(e_list.getElnllist().size() > 1){
-					if(newMat.getText() != "New Material"){
-						e_list.deleteRow(newLineClass());
-						
-						e_list.remove(newMat);
-						e_list.remove(amount);
-						e_list.remove(price);
-						e_list.remove(total);
-						e_list.remove(deleteMat);
-						
-						e_list.refreshUI();
-						deleteMaterial(a);
-					}
-				}
+				deleteRow();
 			}
 		});
 	}
 	
-	
+	/**
+	 * Falls mehr als eine Zeile vorhanden ist, wird diese gelöscht.
+	 */
+	protected void deleteRow() {
+		if(e_list.getElnllist().size() > 1){
+			if(newMat.getText() != "New Material"){
+				e_list.deleteRow(newLineClass());
+				
+				e_list.remove(newMat);
+				e_list.remove(amount);
+				e_list.remove(price);
+				e_list.remove(total);
+				e_list.remove(deleteMat);
+				
+				e_list.refreshUI();
+				deleteMaterial(a);
+			}
+		}
+	}
+
+	/**
+	 * Wenn in das "amount" Textfeld geschrieben wird, so wird
+	 * der Gesamtpreis Textfeld dynamisch verändert, sowie in
+	 * der Statusleiste den Preis der gesamten Liste
+	 */
+	protected void amountWrite() {
+		try{
+			int i = Integer.parseInt(amount.getText());
+			Double d = Double.parseDouble(price.getText());
+
+			Double id = i*d;
+			
+			total.setText(String.valueOf(id));
+
+			a.setA_amount(i);
+			materialChanged();
+		}catch(Exception ex){};
+	}
+
+	/**
+	 * Der JDialog zum Suchen wird erstellt.<br>
+	 * Das ausgewählte Item wird übernommen und der Text von
+	 * "newMat" Button wird auf den Itemnamen umgeschrieben.
+	 * Der Itempreis wird in das Textfeld "price" geschrieben.
+	 * 
+	 * Zuletzt wird eine neue leere Zeile in die GUI eingefügt
+	 * und die gesamte Oberfläche aktualisiert.
+	 */
+	protected void getNewItem() {
+		S_Search ss = new S_Search();
+		ss.setSize(new Dimension(200, 300));
+		ss.setVisible(true);
+		
+		Item i = ss.getSelectedItem();
+		
+		if(i != null){
+			a.setFk_Item(i);
+			
+			newMat.setText(i.getI_name());
+			price.setText(String.valueOf(i.getI_price()));
+			
+			e_list.newRow();
+			
+			e_list.refreshUI();
+		}
+	}
 
 	private void loadAmountIntoComponents() {
 		newMat.setText(a.getFk_Item().getI_name());

@@ -29,6 +29,11 @@ public class E_List extends JPanel implements MaterialChanged{
 		init();
 	}
 	
+	/**
+	 * Als LayoutManager wird MigLayout verwendet.
+	 * Beim ersten Aufruf der Liste, wird zuerst der Kopf geschrieben und
+	 * danach eine neue Zeile mit der Auswahl auf neues Material und Menge.
+	 */
 	public void init() {
 		setLayout(new MigLayout("", "[]", "[]"));
 		firstRow();
@@ -36,6 +41,10 @@ public class E_List extends JPanel implements MaterialChanged{
 		newRow();
 	}
 
+	/**
+	 * Eine neue Zeile enthält einen Button ("New Material").
+	 * Solang diese Zeile keine Daten beinhaltet, kann keine neue Zeile erstellt werden.
+	 */
 	public void newRow() {
 		boolean check = true;
 		for(E_L_NewLine n : elnllist)
@@ -50,6 +59,12 @@ public class E_List extends JPanel implements MaterialChanged{
 		}
 	}
 	
+	/**
+	 * Die Liste wird aus der DB geladen und beinhaltet Daten und diese
+	 * werden befüllt.
+	 * 
+	 * @param a - Aus der DB die erhaltene Menge
+	 */
 	public void newRow(Amount a) {
 		boolean check = true;
 		for(E_L_NewLine n : elnllist)
@@ -70,8 +85,6 @@ public class E_List extends JPanel implements MaterialChanged{
 	}
 
 	private void firstRow() {
-		// TODO Erste Zeile erstellen, welche es ermöglicht 
-		//		die Bezeichnung der Gruppe zu ändern
 		groupNameJTF.setColumns(25);
 		
 		add(groupNameJTF, "span 4, wrap");
@@ -81,8 +94,15 @@ public class E_List extends JPanel implements MaterialChanged{
 		G_Fail.infoBox(string, error);
 	}
 	
+	/**
+	 * Aus der DB wird die Gruppe geholt und geladen. Sämtliche enthaltenen
+	 * Items und Mengen werden übernommen. Jeder Datensatz enthält eine
+	 * verschiedene Anzahl von Mengen. Für jeden Datensatz wird eine neue
+	 * Zeile geschrieben mit entsprechender Menge der Items.
+	 * 
+	 * @param g - Aus der DB erhaltene Gruppe
+	 */
 	public void loadAmounts(Gruppe g) {
-		// TODO Auto-generated method stub
 		if(g != null){
 			firstRow();
 			groupNameJTF.setText(g.getName());
@@ -99,17 +119,19 @@ public class E_List extends JPanel implements MaterialChanged{
 		}
 	}
 	
+	/**
+	 * Die aktuelle Liste wird gelöscht bis auf die erste und der Kopfzeile.
+	 */
 	public void cleanUpList(){
 		removeAll();
 		elnllist.clear();
 		groupNameJTF.setText("");
-		//init();
 		refreshUI();
 	}
 
+
 	@Override
 	public void materialChanged(Amount a) {
-		// TODO Materialliste aktualisieren
 		if(amountlist.contains(a)){
 			amountlist.remove(a);
 			amountlist.add(a);
@@ -122,24 +144,20 @@ public class E_List extends JPanel implements MaterialChanged{
 	
 	@Override
 	public void deleteMaterial(Amount a) {
-		// TODO Auto-generated method stub
 		amountlist.remove(a);
 		aq.deleteAmount(a);
 	}
 
 	public void addControlListener(E_Main e_Main) {
-		// TODO Auto-generated method stub
 		controllist.add(e_Main);
 	}
 
 	public void refreshTotalSumLabel() {
-		// TODO Auto-generated method stub
 		for(ControlListener cl : controllist)
 			cl.refreshTotalSum(amountlist);
 	}
 
 	public void refreshUI() {
-		// TODO Auto-generated method stub
 		for(ControlListener cl : controllist)
 			cl.refreshUI();
 	}
